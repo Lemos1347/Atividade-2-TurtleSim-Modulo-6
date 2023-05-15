@@ -19,7 +19,8 @@ python3 main.py
 ```
 
 **Projeto rodando**  
-https://github.com/Lemos1347/Atividade-2-TurtleSim-Modulo-6/assets/99190347/5983fb1e-ccc6-408c-9df7-caa823e969f9
+
+https://github.com/Lemos1347/Atividade-2-TurtleSim-Modulo-6/assets/99190347/1e0d6b58-6974-42f1-938e-389b98ed06ca
 
 ## Funcionalidades
 
