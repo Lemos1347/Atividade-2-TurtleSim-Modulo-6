@@ -47,7 +47,7 @@ class Turtle_controller(Node):
         # Limpando a tela do TurtleSim
         self._kill_first_turtle()
 
-    def trajectory(self, best_route: list):
+    def trajectory(self, best_route: list, turtle: Turtle):
         # Para cada um dos pontos que a tartaruga deve se mover, comparo com o ponto que ela esta com o que ela deveria ir. O resultado disso sao os pontos x e y que devem ser utilizados no topico cmd_vel
         for i in range(len(best_route)):
             # Coloco um try-except para que ele pare o loop e nao todo o programa quando chegar na ultima posicao
@@ -58,7 +58,7 @@ class Turtle_controller(Node):
             except IndexError:
                 break
 
-            self.move_turtle(self.main_turtle, x=float(x), y=float(y))
+            self.move_turtle(turtle, x=float(x), y=float(y))
             sleep(3)
 
     # Metodo para uso interno da classe para matar a primeira tartaruga criada
@@ -131,7 +131,7 @@ def main(args=None):
     best_route = Router_optimizer.get_best_route(points)
 
     # Executando a movimentacao da tartaruga com base na fila dos pontos que acabamos de criar
-    turtle_controller.trajectory(best_route)
+    turtle_controller.trajectory(best_route, main_turtle)
 
     # Apagando o no, assumindo que todas as tarefas ja foram executadas com sucessso
     turtle_controller.destroy_node()
