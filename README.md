@@ -46,4 +46,6 @@ Toda vez que o programa é rodado, crio pontos aleatórios que a tartaruga princ
 
 Na classe `Turtle_controller` há um método chamado "journey" que é responsável realizar a locomoção da tartaruga principal. Esse método recebe como parâmetro uma lista de pontos e a tartaruga principal é movimentada para cada ponto da lista. Para isso, é utilizado o publisher criado para o tópico "/{nome_tartaruga}/cmd_vel" e é enviado uma mensagem do tipo "Twist" para o nó "turtlesim" que está inscrito nesse tópico. A mensagem é criada com a velocidade linear e angular que a tartaruga deve se locomover. A velocidade linear é calculada com a distância entre o ponto atual e o próximo ponto da lista.
 
-Toda a lógica do código está na função `main`, desde a inicialização do rclpy, instanciação dos nós, criação dos clientes e publisher, até a chamada da função `journey` para realizar a locomoção da tartaruga principal.
+Toda a lógica do código está na função `main`, desde a inicialização do rclpy, instanciação dos nós, criação dos clientes e publisher, até a chamada da função `journey` para realizar a locomoção da tartaruga principal.     
+  
+**_Observação:_** os arquivos `mainTeste.py` e `subscriberTeste.py` são para desenvolvimento, apenas considere o `main.py`.
