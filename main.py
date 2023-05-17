@@ -6,7 +6,7 @@ from turtlesim.srv import Spawn, Kill
 from time import sleep
 import random
 from itertools import permutations
-from math import sqrt
+from math import sqrt, atan2, degrees, radians
 
 # Classe contento todas as funcoes para escolher a rota mais curta para passar em todos os pontos
 class Router_optimizer():
@@ -71,7 +71,16 @@ class Turtle_controller(Node):
                 print(f"Moving to {best_route[i]}")
                 x: float = float(best_route[i][0]) - float(Turtle_controller.last_pose.x)
                 y: float = float(best_route[i][1]) - float(Turtle_controller.last_pose.y)
-                self.move_turtle(turtle, x=x, y=y)
+
+                # Calcular o ângulo entre a posição atual da tartaruga e o próximo ponto
+                angle: float = atan2(y, x)
+                # Girar a tartaruga para esse ângulo
+                self.rotate_turtle(turtle, target_angle=angle)
+                sleep(1)
+
+                distance: float = sqrt(x**2 + y**2)
+
+                self.move_turtle(turtle, x=distance)
                 sleep(3)
             except IndexError:
                 break
@@ -86,6 +95,36 @@ class Turtle_controller(Node):
         # Chamando o serviço
         kill_client.call_async(kill_request)
         sleep(1)
+    
+    def rotate_turtle (self, turtle:Turtle, target_angle:float):
+        # Converter o ângulo alvo para graus
+        target_angle = degrees(target_angle)
+        # Criar um publicador para o tópico cmd_vel
+        rotate_publisher = self.create_publisher(Twist, f'{turtle.name}/cmd_vel', 10)
+        # Criar uma mensagem Twist
+        twist_msg = Twist()
+        
+        while True:
+            # Calcular a diferença entre o ângulo atual da tartaruga e o ângulo alvo
+            angle_diff = target_angle - degrees(Turtle_controller.last_pose.theta)
+            # Se a diferença de ângulo for pequena o suficiente, pare de girar
+            if abs(angle_diff) < 0.1:
+                break
+            # Caso contrário, continue girando a tartaruga na direção correta
+            twist_msg.angular.z = radians(angle_diff)
+        
+            if radians(angle_diff) < -2.0 or radians(angle_diff) > 2.0:
+                if radians(angle_diff) < 0:
+                    twist_msg.angular.z = -2.0
+                elif radians(angle_diff) > 0:
+                    twist_msg.angular.z = 2.0
+            print(f"Angle diff: {twist_msg.angular.z}")
+            # Publicar a mensagem
+            rotate_publisher.publish(twist_msg)
+            for _ in range(15):
+                rclpy.spin_once(self, timeout_sec=0.5)
+            # Dar algum tempo para o ROS processar a nova mensagem
+            
     
     # Metodo para mover uma tartaruga
     def move_turtle(self, turtle:Turtle, x=None, y=None, z=None):
@@ -131,7 +170,7 @@ def main(args=None):
     turtle_controller = Turtle_controller()
 
     # Criando os pontos aleatorios entre 0 e 10 que a tartaruga principal deve passar
-    points = [(random.randint(0,10), random.randint(0, 10)) for _ in range(5)]
+    points = [(random.randint(1,10), random.randint(1, 10)) for _ in range(5)]
 
     # Criando as tartarugas nos pontos aleatorios para uma melhor visuzlizacao de onde a tartaruga principal deve passar 
     for point in points:  
