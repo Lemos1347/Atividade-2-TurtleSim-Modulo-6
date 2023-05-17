@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
+from turtlesim.msg import Pose
 from turtlesim.srv import Spawn, Kill
 from time import sleep
 import random
@@ -40,6 +41,7 @@ class Turtle:
 
 # Classe Turtle_controller que contem todos os métodos necessários para controlar uma tartaruga. Essa classe é um nó do ROS para que possa se comunicar com o nó do TurtleSim
 class Turtle_controller(Node):
+    last_pose = Pose(x=float(0), y=float(0))
     def __init__(self):
         # Criando um nó no ROS com o nome "turtle_controller"
         super().__init__('turtle_controller')
@@ -47,19 +49,32 @@ class Turtle_controller(Node):
         # Limpando a tela do TurtleSim
         self._kill_first_turtle()
 
+        self.subscription = self.create_subscription(
+            Pose,
+            '/turtle5/pose',
+            self.listener_callback,
+            10)
+        self.subscription
+    
+    def listener_callback(self, msg):
+        Turtle_controller.last_pose = msg
+        # self.get_logger().info('Pose: %.2f %.2f %.2f' % (msg.x, msg.y, msg.theta))
+
     def trajectory(self, best_route: list, turtle: Turtle):
         # Para cada um dos pontos que a tartaruga deve se mover, comparo com o ponto que ela esta com o que ela deveria ir. O resultado disso sao os pontos x e y que devem ser utilizados no topico cmd_vel
-        for i in range(len(best_route)):
+        for i in range(1, len(best_route)):
+            print(i)
+            for _ in range(10):
+                rclpy.spin_once(self, timeout_sec=0.5)
             # Coloco um try-except para que ele pare o loop e nao todo o programa quando chegar na ultima posicao
             try:
-                print(f"Moving to {best_route[i+1]}")
-                x = best_route[i+1][0] - best_route[i][0] 
-                y = best_route[i+1][1] - best_route[i][1] 
+                print(f"Moving to {best_route[i]}")
+                x: float = float(best_route[i][0]) - float(Turtle_controller.last_pose.x)
+                y: float = float(best_route[i][1]) - float(Turtle_controller.last_pose.y)
+                self.move_turtle(turtle, x=x, y=y)
+                sleep(3)
             except IndexError:
                 break
-
-            self.move_turtle(turtle, x=float(x), y=float(y))
-            sleep(3)
 
     # Metodo para uso interno da classe para matar a primeira tartaruga criada
     def _kill_first_turtle(self):
