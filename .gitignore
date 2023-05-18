@@ -152,6 +152,12 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Turtlesim_optmizer package
+turtlesim_route_optimizer/build
+turtlesim_route_optimizer/install
+turtlesim_route_optimizer/log
+
+
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
