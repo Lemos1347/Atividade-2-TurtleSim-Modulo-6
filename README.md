@@ -20,7 +20,7 @@ python3 main.py
 
 **Projeto rodando**  
 
-https://github.com/Lemos1347/Atividade-2-TurtleSim-Modulo-6/assets/99190347/1e0d6b58-6974-42f1-938e-389b98ed06ca
+https://github.com/Lemos1347/Atividade-2-TurtleSim-Modulo-6/assets/99190347/52ee65a8-9578-4c78-9c31-25dcc2959717
 
 ## Funcionalidades
 
