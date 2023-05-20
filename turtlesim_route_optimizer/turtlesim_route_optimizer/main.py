@@ -73,7 +73,7 @@ class Turtle_controller(Node):
             self.turtle_to_look_up[f'{turtle.name}'] = turtle
 
     # Para que seja possível identificar qual tartaruga deseja atualizar a last_pose, crio função encapsulada para que além de receber a msg que está sendo publicada no tópico, também recebe uma mensagem padrão que é definida no momento em que a função 'generate_callback' é chamada, a qual é o nome da tartaruga(assim podemos identificar de qual tópico essa mensagem está vindo)
-    def generate_callback(self, topic_name: str) -> function:
+    def generate_callback(self, topic_name: str):
         def callback(msg: Pose):
             self.listener_callback(msg, topic_name)
         return callback
