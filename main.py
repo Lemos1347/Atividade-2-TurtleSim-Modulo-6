@@ -73,20 +73,20 @@ class Turtle_controller(Node):
             self.turtle_to_look_up[f'{turtle.name}'] = turtle
 
     # Para que seja possível identificar qual tartaruga deseja atualizar a last_pose, crio função encapsulada para que além de receber a msg que está sendo publicada no tópico, também recebe uma mensagem padrão que é definida no momento em que a função 'generate_callback' é chamada, a qual é o nome da tartaruga(assim podemos identificar de qual tópico essa mensagem está vindo)
-    def generate_callback(self, topic_name):
-        def callback(msg):
+    def generate_callback(self, topic_name: str) -> function:
+        def callback(msg: Pose):
             self.listener_callback(msg, topic_name)
         return callback
 
     # Função para atualizar a 'last_pose' de uma tartaruga
-    def listener_callback(self, msg, topic_name):
+    def listener_callback(self, msg: Pose, topic_name: str) -> None:
         # Utilizando 'try' para exibir uma mensagem de erro caso a tartaruga que desejo atualizar a last_pose não esteja na lista de monitoramento.
         try:
             self.turtle_to_look_up[topic_name].last_pose = msg
         except:
             print(f'Error: {topic_name}/pose not found!')
 
-    def trajectory(self, best_route: list, turtle: Turtle):
+    def trajectory(self, best_route: list, turtle: Turtle) -> None:
         # Para cada um dos pontos que a tartaruga deve se mover, comparo com o ponto que ela esta com o que ela deveria ir. O resultado disso sao os pontos x e y que devem ser utilizados no topico cmd_vel
         for i in range(1, len(best_route)):
             # Realizamos multiplas vezes o spin do nó para que seja possível pegar as últimas mensagens dos tópicos que esse nó está como subscriber, ou seja, o last_pose das tartarugas serão atualizados
@@ -143,7 +143,7 @@ class Turtle_controller(Node):
                 rclpy.spin_once(self, timeout_sec=0.5)
             
     # Metodo para uso interno da classe para matar a primeira tartaruga criada
-    def _kill_first_turtle(self):
+    def _kill_first_turtle(self) -> None:
         # Utilizando um método da classe herdada para utilizar o serviço kill do TurtleSim
         kill_client = self.create_client(Kill, 'kill')
         # Configurando a chamada do serviço
@@ -154,7 +154,7 @@ class Turtle_controller(Node):
         sleep(1)
     
     # Metodo para mover uma tartaruga
-    def move_turtle(self, turtle:Turtle, x=None, y=None, z=None):
+    def move_turtle(self, turtle:Turtle, x: float=None, y: float=None, z: float=None) -> None:
         # Utilizando um método da classe herdada para conseguir publicar no tópico cmd_vel do TurtleSim
         move_publisher = self.create_publisher(Twist, f'{turtle.name}/cmd_vel', 10)
         # Criando uma mensagem do tipo Twist (o que vai ser publicado)
@@ -171,7 +171,7 @@ class Turtle_controller(Node):
         sleep(1)
     
     # Metodo para criar um tartaruga
-    def spawn_turtle(self, turtle:Turtle, x=None, y=None, theta=None):
+    def spawn_turtle(self, turtle:Turtle, x:float=None, y:float=None, theta:float=None) -> None:
         # Utilizando um método da classe herdada para utilizar o serviço spawn do TurtleSim
         spawn_client = self.create_client(Spawn, 'spawn')
         # Configurando a chamada do serviço
@@ -189,7 +189,7 @@ class Turtle_controller(Node):
         sleep(1)
 
 # Função principal de execução
-def main(args=None):
+def main(args=None) -> None:
     # Inicializando o ROS
     rclpy.init(args=args)
     # # Instanciando um objeto Turtle_controller
